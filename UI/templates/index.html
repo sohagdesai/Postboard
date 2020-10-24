@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  <title>W210 Postop Form</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js" type="text/javascript"></script>
+  
+<link rel='stylesheet' href='http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css'>
+<link rel='stylesheet' href='http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css'>
+<link rel='stylesheet' href='http://cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.0/css/bootstrapValidator.min.css'>
+
+<link rel="stylesheet" href="css/style.css">
+
+<!--
+<style>
+    th, td, p, input {
+        font:20px sans-serif;
+    }
+    table, th, td {
+        border: solid 2px #DDD;
+        border-collapse: collapse;
+        padding: 5px 5px;
+        text-align: center;
+    }
+    th {
+        font-weight:bold;
+    }
+</style>
+-->
+  
+</head>
+<body>
+<div class="container" id="form_container">
+<form class="well form-horizontal" action=" " method="post"  id="patient_input">
+
+<!-- Form Name -->
+<legend align=center>Complete this form after surgery</legend>
+
+<fieldset>
+
+<!-- Text Input Surgeon ID -->
+<div class="form-group">
+  <label class="col-md-4 control-label" >Surgeon ID</label>
+    <div class="col-md-4 inputGroupContainer">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input id="surgeonID" name="surgeonID" placeholder="Surgeon Code" class="form-control"  type="text">
+      </div>
+    </div>
+</div>
+
+<!-- Text Input Procedure ID -->
+<div class="form-group">
+  <label class="col-md-4 control-label" >Operation Index</label>
+    <div class="col-md-4 inputGroupContainer">
+    <div class="input-group">
+  <span class="input-group-addon"><i class="glyphicon glyphicon-barcode"></i></span>
+  <input id="indexCode" name="indexCode" placeholder="Scheduled Index Code" class="form-control"  type="text">
+    </div>
+  </div>
+</div>
+
+<!-- Get Patient Info Button -->
+<div class="form-group">
+    <label class="col-md-4 control-label"></label> 
+    <div class="col-md-4">
+       <form class="form-inline">
+       <button type="button" onClick="getPatientInfo(document.getElementById('indexCode').value)" class="btn btn-info" id="getpatientinfo">Get Patient Information<span class="glyphicon glyphicon-save"></span></button>
+  </div>
+</div>
+
+
+<!-- Radio Buttons Gender -->
+ <div class="form-group">
+  <label class="col-md-4 control-label">Gender</label>
+    <div class="col-md-4">
+      <div class="radio">
+        <label>
+          <input type="radio" name="gender" value="male" /> Male
+        </label>
+      </div>
+    <div class="radio">
+      <label>
+        <input type="radio" name="gender" value="female" /> Female
+      </label>
+    </div>
+  </div>
+</div>
+  
+  
+<!-- Text Input Age-->
+<div class="form-group">
+  <label class="col-md-4 control-label">Age</label>  
+    <div class="col-md-4 inputGroupContainer">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+        <input readonly id="age" name="age" placeholder="Age" class="form-control"  type="number">
+      </div>
+    </div>
+</div>
+
+
+<!-- Text Input Weight -->
+<div class="form-group">
+  <label class="col-md-4 control-label">Weight</label>  
+    <div class="col-md-4 inputGroupContainer">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-record"></i></span>
+        <input readonly id="weight" name="weight" placeholder="Weight (Kilograms)" class="form-control" type="number">
+      </div>
+    </div>
+</div>
+
+
+<!-- Text Input Height -->
+<div class="form-group">
+  <label class="col-md-4 control-label">Height</label>  
+    <div class="col-md-4 inputGroupContainer">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-record"></i></span>
+        <input readonly id="height" name="height" placeholder="Height (Inches)" class="form-control" type="number">
+      </div>
+    </div>
+</div>
+
+<!-- Text Input Admission Date -->
+<div class="form-group">
+  <label class="col-md-4 control-label">Admission Date</label>  
+    <div class="col-md-4 inputGroupContainer">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+        <input readonly id="admissiondate" name="admissiondate" placeholder="01/01/2001" class="form-control" type="datetime">
+      </div>
+    </div>
+</div>
+  
+
+<!-- Text Input Admission Time -->
+<div class="form-group">
+  <label class="col-md-4 control-label">Admission Time</label>  
+    <div class="col-md-4 inputGroupContainer">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+        <input readonly id="admissiontime" name="admissiontime" placeholder="12:00" class="form-control" type="datetime">
+      </div>
+    </div>
+</div>  
+
+<!-- Text Area PreOp Notes -->
+<div class="form-group">
+  <label class="col-md-4 control-label">PreOp Notes</label>
+    <div class="col-md-4 inputGroupContainer">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
+        <textarea readonly class="form-control" id="preopnotes" name="preopnotes" placeholder="Enter PreOp Notes here"></textarea>
+      </div>
+    </div>
+</div>
+
+<!-- Enter PostOp Notes Button -->
+<div class="form-group">
+  <label class="col-md-4 control-label"></label> 
+    <div class="col-md-4">
+      <form class="form-inline"  id="disppostop">
+        <button type="button" onclick="showField()" class="btn btn-info">PostOp Notes<span class="glyphicon glyphicon-save"></span></button>
+    </div>
+</div>
+
+<!-- Text Area PostOp Notes-->
+<div class="form-group" id="postopnotes">
+  <label class="col-md-4 control-label">PostOp Notes</label>
+    <div class="col-md-4 inputGroupContainer">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
+        <textarea class="form-control" name="postopnotes" id="postopnotestext" placeholder="Enter PostOp Notes here"></textarea>
+      </div>
+    </div>
+</div>
+
+<!-- Generate Codes Button -->
+<div class="form-group">
+  <label class="col-md-4 control-label"></label>
+    <div class="col-md-4">
+      <form class="form-inline" id="gencodes">
+      <button type="button" onclick="predictOpCode(document.getElementById('surgeonID').value, document.getElementById('indexCode').value, document.getElementById('postopnotestext').value)" class="btn btn-warning">Generate Code(s)<span class="glyphicon glyphicon-save"></span></button>
+    </div>
+</div>
+</fieldset>
+</form>
+</div>
+
+<hr> 
+<!-- Generate Risks Button -->
+<div class="form-group1">
+      <form class="form-inline1" id="showrisk">
+      <button type="button" align=left padding-left="50px" onclick="predictRisk(document.getElementById('surgeonID').value, document.getElementById('indexCode').value, document.getElementById('postopnotestext').value)" class="btn btn-warning">Show Risk<span class="glyphicon glyphicon-save"></span></button>
+</div>
+
+<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src='http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>
+<script src='http://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.4.5/js/bootstrapvalidator.min.js'></script>
+
+<script  src="js/index.js"></script>
+
+</body>
+</html>
