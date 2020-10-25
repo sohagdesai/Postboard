@@ -1,0 +1,29 @@
+{% extends "layout.jinja2" %}
+
+{% block pagestyles %}
+  <link href="{{ url_for('static', filename='dist/css/table.css') }}" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="https://use.typekit.net/sus7rlu.css">
+{% endblock %}
+
+{% block content %}
+  {% if current_user.is_authenticated %}
+
+    <table class="styled-table">
+    <thead>
+      <tr>
+      {% for item in titles %}
+        <th class="c1">{{item}}</th>
+      {% endfor %}
+      </tr>
+    </thead>
+    {% for article in results %}
+    <TR>
+       <TD class="c2">{{article.author}}</TD>
+       <TD class="c2">{{article.title}}</TD>
+       <TD class="c2">{{article.body}}</TD>
+    </TR>
+    {% endfor %}
+    </table>
+
+  {% endif %}
+{% endblock %}
