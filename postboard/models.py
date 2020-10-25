@@ -1,4 +1,5 @@
 """Database models."""
+import datetime
 from . import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -30,6 +31,7 @@ class User(UserMixin, db.Model):
 	)
 	created_on = db.Column(
         	db.DateTime,
+                default=datetime.datetime.utcnow,
         	index=False,
         	unique=False,
         	nullable=True
@@ -75,8 +77,15 @@ class Article(db.Model):
 		nullable=False,
 		unique=False
 	)
+	posted_on = db.Column(
+        	db.DateTime,
+                default=datetime.datetime.utcnow,
+        	index=False,
+        	unique=False,
+        	nullable=True
+    	)
 	def set_author(self, author):
-		"""Set article title."""
+		"""Set article author."""
 		self.author = author
 
 	def set_title(self, title):
@@ -86,3 +95,7 @@ class Article(db.Model):
 	def set_body(self, body):
 		"""Set article body."""
 		self.body = body
+
+	def set_posted_on(self, posted_on):
+		"""Set posted time."""
+		self.posted_on = posted_on

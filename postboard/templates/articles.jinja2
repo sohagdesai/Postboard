@@ -8,22 +8,41 @@
 {% block content %}
   {% if current_user.is_authenticated %}
 
+  <div class="form-wrapper">
+    <h5>Logged in as: {{ current_user.name }}</h5>
+
     <table class="styled-table">
     <thead>
       <tr>
-      {% for item in titles %}
-        <th class="c1">{{item}}</th>
+      {% for header in headers %}
+        <th class="c1">{{header}}</th>
       {% endfor %}
       </tr>
     </thead>
     {% for article in results %}
     <TR>
+       <TD class="c2">{{article.id}}</TD>
        <TD class="c2">{{article.author}}</TD>
        <TD class="c2">{{article.title}}</TD>
        <TD class="c2">{{article.body}}</TD>
+       <TD class="c2">{{article.posted_on}}</TD>
     </TR>
     {% endfor %}
     </table>
+
+     <fieldset class="selection">
+        {{ form.selection.label }}
+        {{ form.selection(cols=100) }}
+        {% if form.selection.errors %}
+          <ul class="errors">
+            {% for error in form.selection.errors %}
+              <li>{{ error }}</li>{% endfor %}
+          </ul>
+        {% endif %}
+      </fieldset>
+      <div class="submit-button">
+        {{ form.submit }}
+      </div>
 
     <a href="{{ url_for('main_bp.dashboard') }}">Back</a>
     <a href="{{ url_for('main_bp.logout') }}">Log out</a>

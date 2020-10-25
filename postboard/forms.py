@@ -48,8 +48,8 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Log In')
 
-class ArticleForm(FlaskForm):
-    """Article Form."""
+class PostArticleForm(FlaskForm):
+    """Post article Form."""
     title = StringField(
         'Title',
         validators=[DataRequired()]
@@ -60,3 +60,11 @@ class ArticleForm(FlaskForm):
         validators=[DataRequired()]
     )
     submit = SubmitField('Post Article')
+
+class EditArticleForm(FlaskForm):
+    """Show articles Form."""
+    selection = StringField(
+        'Select Article ID to Edit',
+        validators=[DataRequired()]
+    )
+    submit = SubmitField('Edit Article')

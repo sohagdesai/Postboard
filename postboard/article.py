@@ -1,7 +1,7 @@
 """Routes for posting and editing an article."""
 from flask import redirect, render_template, flash, Blueprint, request, url_for
 from flask_login import current_user, login_user
-from .forms import ArticleForm
+from .forms import PostArticleForm
 from .models import db, User
 from .import login_manager
 
@@ -22,7 +22,7 @@ def add():
     GET requests serve articles.
     POST requests create articles.
     """
-    form = ArticleForm()
+    form = PostArticleForm()
     if form.validate_on_submit():
         existing_author = Article.query.filter_by(author=current_user.name).first()
         existing_title = Article.query.filter_by(title=form.title.data).first()
