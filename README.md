@@ -21,3 +21,6 @@ $ flask run
 * `LESS_RUN_IN_DEBUG`: Debug LESS while in `development` (optional).
 * `COMPRESSOR_DEBUG`: Debug asset compression while in `development` (optional).
 -----
+=======
+# Postboard
+This project enables a user to post and edit articles.
