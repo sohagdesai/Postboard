@@ -40,7 +40,7 @@ def dashboard():
 
 @main_bp.route("/fetch", methods=['GET'])
 @login_required
-def table():
+def articles():
     """Table to view user's articles."""
     article = Article(
         author=current_user.name

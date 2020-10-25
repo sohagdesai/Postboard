@@ -25,5 +25,7 @@
     {% endfor %}
     </table>
 
+    <a href="{{ url_for('main_bp.dashboard') }}">Back</a>
+    <a href="{{ url_for('main_bp.logout') }}">Log out</a>
   {% endif %}
 {% endblock %}

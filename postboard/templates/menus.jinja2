@@ -10,38 +10,8 @@
 
   <div class="form-wrapper">
     <h5>Logged in as: {{ current_user.name }}</h5>
-
-    <form method="POST" action="/add">
-      {{ form.csrf_token }}
-
-      <fieldset class="title">
-        {{ form.title.label }}
-        {{ form.title(cols=100) }}
-        {% if form.title.errors %}
-          <ul class="errors">
-            {% for error in form.title.errors %}
-              <li>{{ error }}</li>{% endfor %}
-          </ul>
-        {% endif %}
-      </fieldset>
-
-      <fieldset class="body">
-        {{ form.body.label }}
-        {{ form.body(cols=50,rows=10) }}
-        {% if form.body.errors %}
-          <ul class="errors">
-            {% for error in form.body.errors %}
-              <li>{{ error }}</li>{% endfor %}
-          </ul>
-        {% endif %}
-      </fieldset>
-
-      <div class="submit-button">
-        {{ form.submit }}
-      </div>
-    </form>
-
-    <a href="{{ url_for('main_bp.logout') }}">Log out</a>
+    <a href="{{ url_for('main_bp.dashboard') }}">Post article</a>
+    <a href="{{ url_for('main_bp.articles') }}">Fetch article</a>
     <a href="{{ url_for('main_bp.logout') }}">Log out</a>
     </div>
   {% endif %}

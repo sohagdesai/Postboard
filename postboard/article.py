@@ -14,7 +14,7 @@ article_bp = Blueprint(
 )
 
 
-@auth_bp.route('/', methods=['GET', 'POST'])
+@article_bp.route('/', methods=['GET', 'POST'])
 def add():
     """
     Add article page.
