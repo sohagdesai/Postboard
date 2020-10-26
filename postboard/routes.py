@@ -50,7 +50,7 @@ def add_article():
 
 @main_bp.route("/fetch", methods=['GET'])
 @login_required
-def articles():
+def fetch_articles():
     """Table to view user's articles."""
     form = ArticleForm()
     article = Article(
