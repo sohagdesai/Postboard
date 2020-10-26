@@ -1,8 +1,8 @@
 """Logged-in page routes."""
 import datetime
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint, render_template, redirect, url_for, request
 from flask_login import current_user, login_required, logout_user
-from .forms import PostArticleForm, EditArticleForm
+from .forms import ArticleForm
 from .models import db, Article
 from sqlalchemy.sql import func
 
@@ -20,7 +20,7 @@ main_bp = Blueprint(
 @login_required
 def dashboard():
     """User Dashboard to post articles."""
-    form = PostArticleForm()
+    form = ArticleForm()
     if form.validate_on_submit():
         article = Article(
             author=current_user.name,
@@ -48,7 +48,7 @@ def dashboard():
 @login_required
 def articles():
     """Table to view user's articles."""
-    form = EditArticleForm()
+    form = ArticleForm()
     article = Article(
         author=current_user.name
     )
@@ -69,33 +69,31 @@ def articles():
 @login_required
 def edit_article():
     """Form to edit article."""
-    form = EditArticleForm()
+    form = ArticleForm()
+    article_id = request.args.get('article_id')
+    print ("======================================")
+    print (f"Article ID = {article_id}")
+    print ("======================================")
     article = Article(
-        id=form.selection.data,
+        id=article_id
     )
-    result = article.query.filter_by(id=id)
-    if form.validate_on_submit():
-        article = Article(
-            id=form.selection.data,
-            author=current_user.name,
-            title=form.title.data,
-            body=form.body.data,
-            posted_on=datetime.datetime.utcnow
-        )
-        article.set_author(current_user.name)
-        article.set_title(form.title.data)
-        article.set_body(form.body.data)
-        article.set_posted_on(func.now())
-        db.session.add(article)
-        db.session.commit()  # Edit existing article
-        return redirect(url_for('main_bp.dashboard'))
+    content = article.query.filter_by(id=article_id).first()
+    print ("======================================")
+    print (f"type(content) = {type(content)}")
+    print (f"content = {content}")
+    print (f"content.id = {content.id}")
+    print (f"content.title = {content.title}")
+    print (f"content.body = {content.body}")
+    print (f"content.posted_on = {content.posted_on}")
+    print ("======================================")
+    form.title.data = content.title 
+    form.body.data = content.body 
     return render_template(
         'dashboard.jinja2',
-        title='Edit Article Dashboard.',
+        title='Article Dashboard.',
         form=form,
         template='dashboard-template',
-        current_user=current_user,
-        body="You may now post an article!"
+        current_user=current_user
     )
 
 @main_bp.route("/logout")
