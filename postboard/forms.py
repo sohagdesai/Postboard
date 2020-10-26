@@ -67,4 +67,13 @@ class EditArticleForm(FlaskForm):
         'Select Article ID to Edit',
         validators=[DataRequired()]
     )
-    submit = SubmitField('Edit Article')
+    title = StringField(
+        'Title',
+        validators=[DataRequired()]
+    )
+    body = TextField(
+        'Body',
+        widget = TextArea(),
+        validators=[DataRequired()]
+    )
+    submit = SubmitField('Update Article')

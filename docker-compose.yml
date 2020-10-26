@@ -1,0 +1,27 @@
+version: "3"
+services:
+  db:
+    image: postgres
+    networks: 
+      - webnet
+    environment:
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_USER: postgres
+      POSTGRES_DB: Postboard
+  web:
+    image: postboard
+    ports:
+      - "5000:5000"
+    networks:
+      - webnet
+    environment:
+      FLASK_APP: wsgi.py
+      FLASK_ENV: development
+      SECRET_KEY: x96I\x9e\xa7\x1f\xc7w\x0f'\xbd\x10\xbf\x17T1\xbd\xea\xfc{nU+\xcc\x9c
+      PG_PROTOCOL: postgresql
+      SQLALCHEMY_DATABASE_URI: postgresql+psycopg2://postgres:admin123@db:5432/Postboard
+      LESS_BIN: /usr/local/bin/lessc
+      DB_HOST: db
+    command: ["./wait-for-it.sh", "db:5432", "--", "./start.sh"]
+networks:
+  webnet:
