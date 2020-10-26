@@ -79,8 +79,6 @@ def edit_article():
     )
     content = article.query.filter_by(id=article_id).first()
     print ("======================================")
-    print (f"type(content) = {type(content)}")
-    print (f"content = {content}")
     print (f"content.id = {content.id}")
     print (f"content.title = {content.title}")
     print (f"content.body = {content.body}")
@@ -88,6 +86,21 @@ def edit_article():
     print ("======================================")
     form.title.data = content.title 
     form.body.data = content.body 
+    if form.validate_on_submit():
+        article = Article(
+            id = article_id,
+            author=current_user.name,
+            title=form.title.data,
+            body=form.body.data,
+            posted_on=datetime.datetime.utcnow
+        )
+        article.set_author(current_user.name)
+        article.set_title(form.title.data)
+        article.set_body(form.body.data)
+        article.set_posted_on(func.now())
+        db.session.add(article)
+        db.session.commit()  # Update article
+        return redirect(url_for('main_bp.dashboard'))
     return render_template(
         'dashboard.jinja2',
         title='Article Dashboard.',
