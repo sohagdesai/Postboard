@@ -59,7 +59,7 @@ def fetch_articles():
     results = article.query.filter_by(author=current_user.name)
     headers = TABLE_HEADERS
     return render_template(
-        'articles.jinja2',
+        'show_articles.jinja2',
         title='Article Table.',
         template='add_article-template',
         headers=headers,
@@ -69,45 +69,47 @@ def fetch_articles():
         body="Here are your articles."
     )
 
-@main_bp.route("/edit", methods=['GET'])
+@main_bp.route("/edit", methods=['GET', 'POST'])
 @login_required
 def edit_article():
     """Form to edit article."""
     form = ArticleForm()
     article_id = request.args.get('article_id')
-    print ("======================================")
-    print (f"Article ID = {article_id}")
-    print ("======================================")
-    article = Article(
-        id=article_id
-    )
-    content = article.query.filter_by(id=article_id).first()
-    print ("======================================")
-    print (f"content.id = {content.id}")
-    print (f"content.title = {content.title}")
-    print (f"content.body = {content.body}")
-    print (f"content.posted_on = {content.posted_on}")
-    print ("======================================")
-    form.title.data = content.title 
-    form.body.data = content.body 
-    if form.validate():
+    if not form.is_submitted():
+        print ("======================================")
+        print (f"Article ID = {article_id}")
+        print ("======================================")
         article = Article(
-            id = article_id,
-            author=current_user.name,
-            title=form.title.data,
-            body=form.body.data,
-            posted_on=datetime.datetime.utcnow
+            id=article_id
         )
+        content = article.query.filter_by(id=article_id).first()
         print ("======================================")
-        print (f"After mods article body = {form.body.data}")
+        print (f"content.id = {content.id}")
+        print (f"content.title = {content.title}")
+        print (f"content.body = {content.body}")
+        print (f"content.posted_on = {content.posted_on}")
         print ("======================================")
-        article.set_author(current_user.name)
-        article.set_title(form.title.data)
-        article.set_body(form.body.data)
-        article.set_posted_on(func.now())
-        db.session.add(article)
-        db.session.commit()  # Update article
-        return redirect(url_for('main_bp.add_article'))
+        form.title.data = content.title 
+        form.body.data = content.body 
+    if form.is_submitted():
+        if form.validate():
+            article = Article(
+                id = article_id,
+                author=current_user.name,
+                title=form.title.data,
+                body=form.body.data,
+                posted_on=datetime.datetime.utcnow
+            )
+            print ("======================================")
+            print (f"After mods article body = {form.body.data}")
+            print ("======================================")
+            article.set_author(current_user.name)
+            article.set_title(form.title.data)
+            article.set_body(form.body.data)
+            article.set_posted_on(func.now())
+            db.session.add(article)
+            db.session.commit()  # Update article
+            return redirect(url_for('main_bp.add_article'))
     return render_template(
         'add_article.jinja2',
         title='Post Article Form.',
@@ -116,47 +118,6 @@ def edit_article():
         current_user=current_user
     )
 
-@main_bp.route("/update", methods=['POST'])
-@login_required
-def update_article():
-    """Form to update article."""
-    form = ArticleForm()
-    article_id = request.args.get('article_id')
-    print ("======================================")
-    print (f"Article ID = {article_id}")
-    print ("======================================")
-    article = Article(
-        id=article_id
-    )
-    form.title.data = content.title 
-    form.body.data = content.body 
-    if form.validate():
-        article = Article(
-            id = article_id,
-            author=current_user.name,
-            title=form.title.data,
-            body=form.body.data,
-            posted_on=datetime.datetime.utcnow
-        )
-        print ("======================================")
-        print (f"After mods article body = {form.body.data}")
-        print ("======================================")
-        article.set_author(current_user.name)
-        article.set_title(form.title.data)
-        article.set_body(form.body.data)
-        article.set_posted_on(func.now())
-        db.session.add(article)
-        db.session.commit()  # Update article
-        return redirect(url_for('main_bp.add_article'))
-    return render_template(
-        'add_article.jinja2',
-        title='Update Article Form.',
-        form=form,
-        template='add_article-template',
-        current_user=current_user
-    )
-
-@main_bp.route("/logout")
 @main_bp.route("/logout")
 @login_required
 def logout():
