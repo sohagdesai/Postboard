@@ -11,6 +11,9 @@
   <div class="form-wrapper">
     <h5>Logged in as: {{ current_user.name }}</h5>
 
+    <form method="POST" action="/edit">
+      {{ form.csrf_token }}
+
     <table class="styled-table">
     <thead>
       <tr>
@@ -40,6 +43,7 @@
           </ul>
         {% endif %}
       </fieldset>
+
       <div class="submit-button">
         {{ form.submit }}
       </div>
