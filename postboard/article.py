@@ -48,11 +48,11 @@ def add():
             article.set_body(form.body.data)
             db.session.add(body)
             db.session.commit()  # Create new body
-        return redirect(url_for('main_bp.dashboard'))
+        return redirect(url_for('main_bp.add_article'))
     return render_template(
-        'dashboard.jinja2',
+        'add_article.jinja2',
         title='Create an Article.',
         form=form,
-        template='dashboard-page',
+        template='add_article-page',
         body="Title of article."
     )

@@ -14,10 +14,10 @@ def compile_static_assets(app):
         output=f'dist/css/account.css',
         extra={'rel': 'stylesheet/less'}
     )
-    dashboard_less_bundle = Bundle(
-        'src/less/dashboard.less',
+    add_article_less_bundle = Bundle(
+        'src/less/add_article.less',
         filters='less,cssmin',
-        output=f'dist/css/dashboard.css',
+        output=f'dist/css/add_article.css',
         extra={'rel': 'stylesheet/less'}
     )
     table_less_bundle = Bundle(
@@ -34,11 +34,11 @@ def compile_static_assets(app):
     )
     # Register assets
     assets.register('account_less_bundle', account_less_bundle)
-    assets.register('dashboard_less_bundle', dashboard_less_bundle)
+    assets.register('add_article_less_bundle', add_article_less_bundle)
     assets.register('table_less_bundle', table_less_bundle)
     assets.register('js_all', js_bundle)
     # Build assets
     account_less_bundle.build()
-    dashboard_less_bundle.build()
+    add_article_less_bundle.build()
     table_less_bundle.build()
     js_bundle.build()

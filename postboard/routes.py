@@ -1,4 +1,4 @@
-"""Logged-in page routes."""
+""""Logged-in page routes."""
 import datetime
 from flask import Blueprint, render_template, redirect, url_for, request
 from flask_login import current_user, login_required, logout_user
@@ -18,8 +18,8 @@ main_bp = Blueprint(
 
 @main_bp.route("/add", methods=['GET','POST'])
 @login_required
-def dashboard():
-    """User Dashboard to post articles."""
+def add_article():
+    """Form to post articles."""
     form = ArticleForm()
     if form.validate_on_submit():
         article = Article(
@@ -28,18 +28,22 @@ def dashboard():
             body=form.body.data,
             posted_on=datetime.datetime.utcnow
         )
+        print ("======================================")
+        print (f"form.title.data = {form.title.data}")
+        print (f"form.body.data= {form.body.data}")
+        print ("======================================")
         article.set_author(current_user.name)
         article.set_title(form.title.data)
         article.set_body(form.body.data)
         article.set_posted_on(func.now())
         db.session.add(article)
         db.session.commit()  # Create new article
-        return redirect(url_for('main_bp.dashboard'))
+        return redirect(url_for('main_bp.add_article'))
     return render_template(
-        'dashboard.jinja2',
-        title='Post Article Dashboard.',
+        'add_article.jinja2',
+        title='Form to Post Articles.',
         form=form,
-        template='dashboard-template',
+        template='add_article-template',
         current_user=current_user,
         body="You may now post an article!"
     )
@@ -57,7 +61,7 @@ def articles():
     return render_template(
         'articles.jinja2',
         title='Article Table.',
-        template='dashboard-template',
+        template='add_article-template',
         headers=headers,
         form=form,
         results=results,
@@ -65,7 +69,7 @@ def articles():
         body="Here are your articles."
     )
 
-@main_bp.route("/edit", methods=['GET', 'POST'])
+@main_bp.route("/edit", methods=['GET'])
 @login_required
 def edit_article():
     """Form to edit article."""
@@ -86,7 +90,7 @@ def edit_article():
     print ("======================================")
     form.title.data = content.title 
     form.body.data = content.body 
-    if form.validate_on_submit():
+    if form.validate():
         article = Article(
             id = article_id,
             author=current_user.name,
@@ -94,21 +98,65 @@ def edit_article():
             body=form.body.data,
             posted_on=datetime.datetime.utcnow
         )
+        print ("======================================")
+        print (f"After mods article body = {form.body.data}")
+        print ("======================================")
         article.set_author(current_user.name)
         article.set_title(form.title.data)
         article.set_body(form.body.data)
         article.set_posted_on(func.now())
         db.session.add(article)
         db.session.commit()  # Update article
-        return redirect(url_for('main_bp.dashboard'))
+        return redirect(url_for('main_bp.add_article'))
     return render_template(
-        'dashboard.jinja2',
-        title='Article Dashboard.',
+        'add_article.jinja2',
+        title='Post Article Form.',
         form=form,
-        template='dashboard-template',
+        template='add_article-template',
         current_user=current_user
     )
 
+@main_bp.route("/update", methods=['POST'])
+@login_required
+def update_article():
+    """Form to update article."""
+    form = ArticleForm()
+    article_id = request.args.get('article_id')
+    print ("======================================")
+    print (f"Article ID = {article_id}")
+    print ("======================================")
+    article = Article(
+        id=article_id
+    )
+    form.title.data = content.title 
+    form.body.data = content.body 
+    if form.validate():
+        article = Article(
+            id = article_id,
+            author=current_user.name,
+            title=form.title.data,
+            body=form.body.data,
+            posted_on=datetime.datetime.utcnow
+        )
+        print ("======================================")
+        print (f"After mods article body = {form.body.data}")
+        print ("======================================")
+        article.set_author(current_user.name)
+        article.set_title(form.title.data)
+        article.set_body(form.body.data)
+        article.set_posted_on(func.now())
+        db.session.add(article)
+        db.session.commit()  # Update article
+        return redirect(url_for('main_bp.add_article'))
+    return render_template(
+        'add_article.jinja2',
+        title='Update Article Form.',
+        form=form,
+        template='add_article-template',
+        current_user=current_user
+    )
+
+@main_bp.route("/logout")
 @main_bp.route("/logout")
 @login_required
 def logout():
