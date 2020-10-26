@@ -65,6 +65,39 @@ def articles():
         body="Here are your articles."
     )
 
+@main_bp.route("/edit", methods=['GET', 'POST'])
+@login_required
+def edit_article():
+    """Form to edit article."""
+    form = EditArticleForm()
+    article = Article(
+        id=form.selection.data,
+    )
+    result = article.query.filter_by(id=id)
+    if form.validate_on_submit():
+        article = Article(
+            id=form.selection.data,
+            author=current_user.name,
+            title=form.title.data,
+            body=form.body.data,
+            posted_on=datetime.datetime.utcnow
+        )
+        article.set_author(current_user.name)
+        article.set_title(form.title.data)
+        article.set_body(form.body.data)
+        article.set_posted_on(func.now())
+        db.session.add(article)
+        db.session.commit()  # Edit existing article
+        return redirect(url_for('main_bp.dashboard'))
+    return render_template(
+        'dashboard.jinja2',
+        title='Edit Article Dashboard.',
+        form=form,
+        template='dashboard-template',
+        current_user=current_user,
+        body="You may now post an article!"
+    )
+
 @main_bp.route("/logout")
 @login_required
 def logout():
