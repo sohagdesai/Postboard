@@ -61,7 +61,7 @@ def fetch_articles():
     return render_template(
         'show_articles.jinja2',
         title='Article Table.',
-        template='add_article-template',
+        template='edit_article-template',
         headers=headers,
         form=form,
         results=results,
@@ -75,7 +75,7 @@ def edit_article():
     """Form to edit article."""
     form = ArticleForm()
     article_id = request.args.get('article_id')
-    if not form.is_submitted():
+    if article_id is not None:
         print ("======================================")
         print (f"Article ID = {article_id}")
         print ("======================================")
@@ -91,27 +91,33 @@ def edit_article():
         print ("======================================")
         form.title.data = content.title 
         form.body.data = content.body 
-    if form.is_submitted():
-        if form.validate():
+    
+    else: 
+        if form.title.data and form.body.data is not None:
             article = Article(
-                id = article_id,
-                author=current_user.name,
-                title=form.title.data,
-                body=form.body.data,
-                posted_on=datetime.datetime.utcnow
+                title=form.title.data
             )
+            print (f"Article ID is None; article title = {form.title.data}")
+            content = Article.query.filter_by(title=form.title.data).first()
+            print (f"Article ID is None; content = {content}")
             print ("======================================")
-            print (f"After mods article body = {form.body.data}")
+            print (f"Form data is not None; article id = {content.id}")
+            print (f"Form data is not None; article title = {form.title.data}")
+            print (f"Form data is not None; article body = {form.body.data}")
             print ("======================================")
+            article.set_id(content.id)
             article.set_author(current_user.name)
             article.set_title(form.title.data)
             article.set_body(form.body.data)
             article.set_posted_on(func.now())
-            db.session.add(article)
+            print ("Almost ready to commit")
+            db.session.merge(article)  # Update article
+            db.session.flush()  # Update article
             db.session.commit()  # Update article
-            return redirect(url_for('main_bp.add_article'))
+            return redirect(url_for('main_bp.edit_article'))
+
     return render_template(
-        'add_article.jinja2',
+        'edit_article.jinja2',
         title='Post Article Form.',
         form=form,
         template='add_article-template',

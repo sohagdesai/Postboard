@@ -84,6 +84,10 @@ class Article(db.Model):
         	unique=False,
         	nullable=True
     	)
+	def set_id(self, article_id):
+		"""Set article ID."""
+		self.id = article_id
+
 	def set_author(self, author):
 		"""Set article author."""
 		self.author = author
