@@ -29,7 +29,7 @@ class User(UserMixin, db.Model):
 		unique=False,
 		nullable=False
 	)
-	created_on = db.Column(
+	created_at = db.Column(
         	db.DateTime,
                 default=datetime.datetime.utcnow,
         	index=False,
@@ -77,7 +77,14 @@ class Article(db.Model):
 		nullable=False,
 		unique=False
 	)
-	posted_on = db.Column(
+	created_at = db.Column(
+        	db.DateTime,
+                default=datetime.datetime.utcnow,
+        	index=False,
+        	unique=False,
+        	nullable=True
+    	)
+	updated_at = db.Column(
         	db.DateTime,
                 default=datetime.datetime.utcnow,
         	index=False,
@@ -100,6 +107,10 @@ class Article(db.Model):
 		"""Set article body."""
 		self.body = body
 
-	def set_posted_on(self, posted_on):
+	def set_created_at(self, created_at):
 		"""Set posted time."""
-		self.posted_on = posted_on
+		self.created_at = created_at
+
+	def set_updated_at(self, updated_at):
+		"""Set updated time."""
+		self.updated_at = updated_at
