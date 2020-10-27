@@ -36,7 +36,7 @@ def add_article():
         db.session.commit()  # Create new article
         return redirect(url_for('main_bp.add_article'))
     return render_template(
-        'add_article.jinja2',
+        'edit_article.jinja2',
         title='Form to Post Articles.',
         form=form,
         template='add_article-template',
@@ -57,7 +57,7 @@ def fetch_articles():
     return render_template(
         'show_articles.jinja2',
         title='Article Table.',
-        template='edit_article-template',
+        template='add_article-template',
         headers=headers,
         form=form,
         results=results,
@@ -84,16 +84,19 @@ def edit_article():
             article = Article(
                 title=form.title.data
             )
-            content = Article.query.filter_by(title=form.title.data).first()
-            article.set_id(content.id)
             article.set_author(current_user.name)
             article.set_title(form.title.data)
             article.set_body(form.body.data)
             article.set_posted_on(func.now())
-            db.session.merge(article) 
-            db.session.flush() 
-            db.session.commit()  # Update article
-            return redirect(url_for('main_bp.edit_article'))
+            content = Article.query.filter_by(title=form.title.data).first()
+            if content is not None:
+                article.set_id(content.id)
+                db.session.merge(article) # Update article
+                db.session.flush() 
+            else:
+                db.session.add(article)   # Add article
+            db.session.commit()  
+            return redirect(url_for('main_bp.add_article'))
 
     return render_template(
         'edit_article.jinja2',
