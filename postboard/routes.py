@@ -28,10 +28,6 @@ def add_article():
             body=form.body.data,
             posted_on=datetime.datetime.utcnow
         )
-        print ("======================================")
-        print (f"form.title.data = {form.title.data}")
-        print (f"form.body.data= {form.body.data}")
-        print ("======================================")
         article.set_author(current_user.name)
         article.set_title(form.title.data)
         article.set_body(form.body.data)
@@ -76,19 +72,10 @@ def edit_article():
     form = ArticleForm()
     article_id = request.args.get('article_id')
     if article_id is not None:
-        print ("======================================")
-        print (f"Article ID = {article_id}")
-        print ("======================================")
         article = Article(
             id=article_id
         )
         content = article.query.filter_by(id=article_id).first()
-        print ("======================================")
-        print (f"content.id = {content.id}")
-        print (f"content.title = {content.title}")
-        print (f"content.body = {content.body}")
-        print (f"content.posted_on = {content.posted_on}")
-        print ("======================================")
         form.title.data = content.title 
         form.body.data = content.body 
     
@@ -97,22 +84,14 @@ def edit_article():
             article = Article(
                 title=form.title.data
             )
-            print (f"Article ID is None; article title = {form.title.data}")
             content = Article.query.filter_by(title=form.title.data).first()
-            print (f"Article ID is None; content = {content}")
-            print ("======================================")
-            print (f"Form data is not None; article id = {content.id}")
-            print (f"Form data is not None; article title = {form.title.data}")
-            print (f"Form data is not None; article body = {form.body.data}")
-            print ("======================================")
             article.set_id(content.id)
             article.set_author(current_user.name)
             article.set_title(form.title.data)
             article.set_body(form.body.data)
             article.set_posted_on(func.now())
-            print ("Almost ready to commit")
-            db.session.merge(article)  # Update article
-            db.session.flush()  # Update article
+            db.session.merge(article) 
+            db.session.flush() 
             db.session.commit()  # Update article
             return redirect(url_for('main_bp.edit_article'))
 
