@@ -7,7 +7,7 @@ from .models import db, Article
 from sqlalchemy.sql import func
 
 
-TABLE_HEADERS = ["ID", "Author", "Title", "Body", "Posted On"]
+TABLE_HEADERS = ["ID", "Author", "Title", "Body", "Created", "Updated"]
 
 # Blueprint Configuration
 main_bp = Blueprint(
@@ -26,12 +26,13 @@ def add_article():
             author=current_user.name,
             title=form.title.data,
             body=form.body.data,
-            posted_on=datetime.datetime.utcnow
+            created_at=datetime.datetime.utcnow
         )
         article.set_author(current_user.name)
         article.set_title(form.title.data)
         article.set_body(form.body.data)
-        article.set_posted_on(func.now())
+        article.set_created_at(func.now())
+        article.set_updated_at(article.created_at)
         db.session.add(article)
         db.session.commit()  # Create new article
         return redirect(url_for('main_bp.add_article'))
@@ -87,13 +88,15 @@ def edit_article():
             article.set_author(current_user.name)
             article.set_title(form.title.data)
             article.set_body(form.body.data)
-            article.set_posted_on(func.now())
             content = Article.query.filter_by(title=form.title.data).first()
             if content is not None:
                 article.set_id(content.id)
+                article.set_updated_at(func.now())
                 db.session.merge(article) # Update article
                 db.session.flush() 
             else:
+                article.set_created_at(func.now())
+                article.set_updated_at(article.created_at)
                 db.session.add(article)   # Add article
             db.session.commit()  
             return redirect(url_for('main_bp.add_article'))
