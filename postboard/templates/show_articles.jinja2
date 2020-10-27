@@ -11,8 +11,7 @@
   <div class="form-wrapper">
     <h5>Logged in as: {{ current_user.name }}</h5>
 
-    <form method="POST" action="/edit">
-      {{ form.csrf_token }}
+    <form method="GET" action="/edit">
 
     <table class="styled-table">
     <thead>
@@ -33,12 +32,12 @@
     {% endfor %}
     </table>
 
-     <fieldset class="selection">
-        {{ form.selection.label }}
-        {{ form.selection(cols=100) }}
-        {% if form.selection.errors %}
+     <fieldset class="article_id">
+        {{ form.article_id.label }}
+        {{ form.article_id(cols=100) }}
+        {% if form.article_id.errors %}
           <ul class="errors">
-            {% for error in form.selection.errors %}
+            {% for error in form.article_id.errors %}
               <li>{{ error }}</li>{% endfor %}
           </ul>
         {% endif %}
@@ -48,7 +47,7 @@
         {{ form.submit }}
       </div>
 
-    <a href="{{ url_for('main_bp.dashboard') }}">Back</a>
+    <a href="{{ url_for('main_bp.add_article') }}">Back</a>
     <a href="{{ url_for('main_bp.logout') }}">Log out</a>
   {% endif %}
 {% endblock %}

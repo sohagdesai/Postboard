@@ -1,7 +1,7 @@
 {% extends "layout.jinja2" %}
 
 {% block pagestyles %}
-  <link href="{{ url_for('static', filename='dist/css/dashboard.css') }}" rel="stylesheet" type="text/css">
+  <link href="{{ url_for('static', filename='dist/css/add_article.css') }}" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="https://use.typekit.net/sus7rlu.css">
 {% endblock %}
 
@@ -40,7 +40,7 @@
         {{ form.submit }}
       </div>
     </form>
-    <a href="{{ url_for('main_bp.articles') }}">Get my articles</a>
+    <a href="{{ url_for('main_bp.fetch_articles') }}">Get my articles</a>
     <a href="{{ url_for('main_bp.logout') }}">Log out</a>
     </div>
   {% endif %}

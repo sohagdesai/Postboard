@@ -1,8 +1,8 @@
-"""Logged-in page routes."""
+""""Logged-in page routes."""
 import datetime
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint, render_template, redirect, url_for, request
 from flask_login import current_user, login_required, logout_user
-from .forms import PostArticleForm, EditArticleForm
+from .forms import ArticleForm
 from .models import db, Article
 from sqlalchemy.sql import func
 
@@ -18,9 +18,9 @@ main_bp = Blueprint(
 
 @main_bp.route("/add", methods=['GET','POST'])
 @login_required
-def dashboard():
-    """User Dashboard to post articles."""
-    form = PostArticleForm()
+def add_article():
+    """Form to post articles."""
+    form = ArticleForm()
     if form.validate_on_submit():
         article = Article(
             author=current_user.name,
@@ -34,30 +34,30 @@ def dashboard():
         article.set_posted_on(func.now())
         db.session.add(article)
         db.session.commit()  # Create new article
-        return redirect(url_for('main_bp.dashboard'))
+        return redirect(url_for('main_bp.add_article'))
     return render_template(
-        'dashboard.jinja2',
-        title='Post Article Dashboard.',
+        'add_article.jinja2',
+        title='Form to Post Articles.',
         form=form,
-        template='dashboard-template',
+        template='add_article-template',
         current_user=current_user,
         body="You may now post an article!"
     )
 
 @main_bp.route("/fetch", methods=['GET'])
 @login_required
-def articles():
+def fetch_articles():
     """Table to view user's articles."""
-    form = EditArticleForm()
+    form = ArticleForm()
     article = Article(
         author=current_user.name
     )
     results = article.query.filter_by(author=current_user.name)
     headers = TABLE_HEADERS
     return render_template(
-        'articles.jinja2',
+        'show_articles.jinja2',
         title='Article Table.',
-        template='dashboard-template',
+        template='edit_article-template',
         headers=headers,
         form=form,
         results=results,
@@ -69,33 +69,38 @@ def articles():
 @login_required
 def edit_article():
     """Form to edit article."""
-    form = EditArticleForm()
-    article = Article(
-        id=form.selection.data,
-    )
-    result = article.query.filter_by(id=id)
-    if form.validate_on_submit():
+    form = ArticleForm()
+    article_id = request.args.get('article_id')
+    if article_id is not None:
         article = Article(
-            id=form.selection.data,
-            author=current_user.name,
-            title=form.title.data,
-            body=form.body.data,
-            posted_on=datetime.datetime.utcnow
+            id=article_id
         )
-        article.set_author(current_user.name)
-        article.set_title(form.title.data)
-        article.set_body(form.body.data)
-        article.set_posted_on(func.now())
-        db.session.add(article)
-        db.session.commit()  # Edit existing article
-        return redirect(url_for('main_bp.dashboard'))
+        content = article.query.filter_by(id=article_id).first()
+        form.title.data = content.title 
+        form.body.data = content.body 
+    
+    else: 
+        if form.title.data and form.body.data is not None:
+            article = Article(
+                title=form.title.data
+            )
+            content = Article.query.filter_by(title=form.title.data).first()
+            article.set_id(content.id)
+            article.set_author(current_user.name)
+            article.set_title(form.title.data)
+            article.set_body(form.body.data)
+            article.set_posted_on(func.now())
+            db.session.merge(article) 
+            db.session.flush() 
+            db.session.commit()  # Update article
+            return redirect(url_for('main_bp.edit_article'))
+
     return render_template(
-        'dashboard.jinja2',
-        title='Edit Article Dashboard.',
+        'edit_article.jinja2',
+        title='Post Article Form.',
         form=form,
-        template='dashboard-template',
-        current_user=current_user,
-        body="You may now post an article!"
+        template='add_article-template',
+        current_user=current_user
     )
 
 @main_bp.route("/logout")
