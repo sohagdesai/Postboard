@@ -53,7 +53,7 @@ def fetch_articles():
     article = Article(
         author=current_user.name
     )
-    results = article.query.filter_by(author=current_user.name)
+    results = Article.query.filter_by(author=current_user.name).order_by(Article.created_at)
     headers = TABLE_HEADERS
     return render_template(
         'show_articles.jinja2',
