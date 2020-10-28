@@ -19,7 +19,8 @@ main_bp = Blueprint(
 
 @main_bp.route("/redis_out", methods=['GET'])
 def print_kv():
-    raw_value = redis_client.get('2')
+    redis_client.mset({"1": "['Successfully', 'connected', 'to Redis server']"})
+    raw_value = redis_client.get('1')
     value = eval(str(raw_value.decode("utf-8")))
     return (str(value))
 

@@ -1,4 +1,5 @@
 """Initialize app."""
+from werkzeug.utils import import_string
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -13,7 +14,8 @@ redis_client = FlaskRedis()
 def create_app():
     """Construct the core app object."""
     app = Flask(__name__, instance_relative_config=False)
-    app.config.from_object('config.Config')
+    cfg = import_string('config.Config')()
+    app.config.from_object(cfg)
 
     # Initialize Plugins
     db.init_app(app)
