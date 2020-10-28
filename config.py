@@ -20,14 +20,6 @@ class Config:
     POSTGRES_DB: environ.get ('POSTGRES_DB')
     DB_HOST = environ.get('DB_HOST')
     SQLALCHEMY_DATABASE_URI = environ.get('SQLALCHEMY_DATABASE_URI')
-    #SQLALCHEMY_DATABASE_URI = PG_PROTOCOL + "://" + \
-    #                          PG_USER + ":" + \
-    #                          PG_PASSWORD + "@" + \
-    #                          DB_HOST + ":5432/Postboard"
-    
-    f = open("Enviroment.txt", "a")
-    f.write (f'SQLALCHEMY_DATABASE_URI = {SQLALCHEMY_DATABASE_URI}')
-    f.close()
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 

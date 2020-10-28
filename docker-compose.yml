@@ -1,5 +1,13 @@
 version: "3"
 services:
+  redis:
+    image: redis
+    networks:
+      - webnet
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6379"
   db:
     image: postgres
     networks: 
@@ -22,6 +30,9 @@ services:
       SQLALCHEMY_DATABASE_URI: postgresql+psycopg2://postgres:admin123@db:5432/Postboard
       LESS_BIN: /usr/local/bin/lessc
       DB_HOST: db
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD:
     command: ["./wait-for-it.sh", "db:5432", "--", "./start.sh"]
 networks:
   webnet:
