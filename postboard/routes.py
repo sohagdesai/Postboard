@@ -4,6 +4,7 @@ from flask import Blueprint, render_template, redirect, url_for, request
 from flask_login import current_user, login_required, logout_user
 from .forms import ArticleForm
 from .models import db, Article
+from . import redis_client
 from sqlalchemy.sql import func
 
 
@@ -15,6 +16,12 @@ main_bp = Blueprint(
     template_folder='templates',
     static_folder='static'
 )
+
+@main_bp.route("/redis_out", methods=['GET'])
+def print_kv():
+    raw_value = redis_client.get('2')
+    value = eval(str(raw_value.decode("utf-8")))
+    return (str(value))
 
 @main_bp.route("/add", methods=['GET','POST'])
 @login_required
