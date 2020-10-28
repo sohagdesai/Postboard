@@ -2,10 +2,12 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_redis import FlaskRedis
 
 
 db = SQLAlchemy()
 login_manager = LoginManager()
+redis_client = FlaskRedis()
 
 
 def create_app():
@@ -16,6 +18,7 @@ def create_app():
     # Initialize Plugins
     db.init_app(app)
     login_manager.init_app(app)
+    redis_client.init_app(app)
 
     with app.app_context():
         from . import routes

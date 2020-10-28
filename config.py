@@ -40,3 +40,8 @@ class Config:
     STATIC_FOLDER = 'static'
     TEMPLATES_FOLDER = 'templates'
     COMPRESSOR_DEBUG = environ.get('COMPRESSOR_DEBUG')
+
+    # Redis
+    REDIS_HOST = environ.get('REDIS_HOST')
+    REDIS_PORT = environ.get('REDIS_PORT')
+    REDIS_PASSWORD = environ.get('REDIS_PASSWORD')
