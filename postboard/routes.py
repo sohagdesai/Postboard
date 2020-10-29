@@ -5,6 +5,7 @@ from flask_login import current_user, login_required, logout_user
 from .forms import ArticleForm
 from .models import db, Article
 from . import redis_client
+from . import cache
 from sqlalchemy.sql import func
 
 
@@ -16,12 +17,6 @@ main_bp = Blueprint(
     template_folder='templates',
     static_folder='static'
 )
-
-@main_bp.route("/redis_out", methods=['GET'])
-def print_kv():
-    raw_value = redis_client.get('2')
-    value = eval(str(raw_value.decode("utf-8")))
-    return (str(value))
 
 @main_bp.route("/add", methods=['GET','POST'])
 @login_required
@@ -38,10 +33,13 @@ def add_article():
         article.set_author(current_user.name)
         article.set_title(form.title.data)
         article.set_body(form.body.data)
-        article.set_created_at(func.now())
-        article.set_updated_at(article.created_at)
+        create_time = func.now()
+        article.set_created_at(create_time)
+        article.set_updated_at(create_time)
         db.session.add(article)
-        db.session.commit()  # Create new article
+        db.session.commit()                                                 # Create new article in db
+        db_row = Article.query.filter_by(created_at=create_time).first()    # Fetch row for caching
+        cache.update_cache(db_row)                                          # Update cache
         return redirect(url_for('main_bp.add_article'))
     return render_template(
         'edit_article.jinja2',
@@ -122,3 +120,10 @@ def logout():
     """User log-out logic."""
     logout_user()
     return redirect(url_for('auth_bp.login'))
+
+def row2dict(row):
+    d = {}
+    for column in row.__table__.columns:
+        d[column.name] = str(getattr(row, column.name))
+
+    return d
