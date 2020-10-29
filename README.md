@@ -55,6 +55,6 @@ postgres=#  SELECT * FROM "PB_User";
 ```shell
 $ docker container ls
 $ docker exec -it <ID of redis container from above command> bash
-root@<ID of redis container>:/data# redis-cli redis-cli
+root@<ID of redis container>:/data# redis-cli
 127.0.0.1:6379> hgetall <stringified ID of any article>
 ```
