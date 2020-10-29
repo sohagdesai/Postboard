@@ -63,5 +63,5 @@ class ArticleForm(FlaskForm):
         widget = TextArea(),
         validators=[DataRequired()]
     )
-    submit = SubmitField('Post Article')
+    submit = SubmitField('Submit')
 
