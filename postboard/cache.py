@@ -1,9 +1,11 @@
 from . import redis_client
+import sys
 
 def update_cache(db_row_dict):
     if not db_row_dict or type(db_row_dict) != dict :  # empty row or non-dict
         return
     row_key = str(db_row_dict["id"])
+    print (f"caching row with ID: {row_key}...", file=sys.stderr)
     redis_client.hmset(row_key, db_row_dict)
     return
 

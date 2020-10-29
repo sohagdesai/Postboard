@@ -18,6 +18,7 @@ main_bp = Blueprint(
     static_folder='static'
 )
 
+
 @main_bp.route("/add", methods=['GET','POST'])
 @login_required
 def add_article():
@@ -37,9 +38,10 @@ def add_article():
         article.set_created_at(create_time)
         article.set_updated_at(create_time)
         db.session.add(article)
-        db.session.commit()                                                 # Create new article in db
-        db_row = Article.query.filter_by(created_at=create_time).first()    # Fetch row for caching
-        cache.update_cache(db_row)                                          # Update cache
+        db.session.commit()                                                         # Create new article in db
+        db_row = Article.query.filter_by(created_at=article.created_at).first()     # Fetch row for caching
+        db_row_dict = row2dict(db_row)                                              # Convert to dictionary
+        cache.update_cache(db_row_dict)                                             # Update cache
         return redirect(url_for('main_bp.add_article'))
     return render_template(
         'edit_article.jinja2',
@@ -103,7 +105,10 @@ def edit_article():
                 article.set_created_at(func.now())
                 article.set_updated_at(article.created_at)
                 db.session.add(article)   # Add article
-            db.session.commit()  
+            db.session.commit()
+            db_row = Article.query.filter_by(id=article.id).first()  # Fetch row for caching
+            db_row_dict = row2dict(db_row)
+            cache.update_cache(db_row_dict)  # Update cache
             return redirect(url_for('main_bp.add_article'))
 
     return render_template(
