@@ -37,9 +37,9 @@ $ docker-compose up
 13. Click "Get My Articles" and observe edited article among list of articles posted for this user sorted by creation date.
 14. Click "Logout".
 
-## Data Verification
+# Data Verification
 
-# Verifying Postgres DB entries
+## Verifying Postgres DB entries
 
 ```shell
 $ docker container ls
@@ -50,7 +50,7 @@ postgres=#  SELECT * FROM "PB_Article";
 postgres=#  SELECT * FROM "PB_User";
 ```
 
-# Verifying Redis cache entries
+## Verifying Redis cache entries
 
 ```shell
 $ docker container ls
