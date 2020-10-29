@@ -12,6 +12,11 @@ def update_cache(db_row_dict):
 def get_cache(row_key):
     byte_dict = redis_client.hgetall(str(row_key))
     row_dict = {}
+    print (f"fetching row from cache row with ID: {row_key}...", file=sys.stderr)
     for key, value in byte_dict.items():
-        row_dict[key.decode("utf-8")] = value.decode("utf-8")
-    return str(row_dict)
+        if value:
+            row_dict[key.decode("utf-8")] = value.decode("utf-8")
+        else:
+            if key:
+                row_dict[key.decode("utf-8")] = ""
+    return (row_dict)

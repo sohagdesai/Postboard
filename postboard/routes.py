@@ -7,6 +7,7 @@ from .models import db, Article
 from . import redis_client
 from . import cache
 from sqlalchemy.sql import func
+import json
 
 
 TABLE_HEADERS = ["ID", "Author", "Title", "Body", "Created", "Updated"]
@@ -82,9 +83,11 @@ def edit_article():
         article = Article(
             id=article_id
         )
-        content = article.query.filter_by(id=article_id).first()
-        form.title.data = content.title 
-        form.body.data = content.body 
+        #print (f"article_id = {article_id}")
+        content = cache.get_cache(str(article_id))
+        #content = article.query.filter_by(id=article_id).first()
+        form.title.data = content["title"]
+        form.body.data = content["body"]
     
     else: 
         if form.title.data and form.body.data is not None:
@@ -129,5 +132,4 @@ def row2dict(row):
     d = {}
     for column in row.__table__.columns:
         d[column.name] = str(getattr(row, column.name))
-
     return d
